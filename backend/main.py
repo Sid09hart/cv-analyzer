@@ -20,10 +20,15 @@ client = genai.Client(api_key=GEMINI_API_KEY)
 # Load the local NLP model
 nlp = spacy.load("en_core_web_sm")
 
-# Allow the frontend to communicate with this backend
+# Create a specific list of allowed origins
+allowed_origins = [
+    "http://localhost:3000",                  # For your local development
+    "https://cv-analyzer-mu-peach.vercel.app/"    # Your actual live Vercel domain
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,            # Replaced ["*"] with the secure list
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
