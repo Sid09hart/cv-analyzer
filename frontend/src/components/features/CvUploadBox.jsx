@@ -17,7 +17,7 @@ export default function CvUploadBox() {
     formData.append("file", selectedFile);
 
     try {
-      const response = await fetch("http://localhost:8000/analyze", {
+      const response = await fetch("https://cv-analyzer-0f4b.onrender.com/", {
         method: "POST",
         body: formData,
       });
@@ -25,7 +25,7 @@ export default function CvUploadBox() {
       if (response.ok) {
         const responseData = await response.json();
         localStorage.setItem("cvAnalysis", JSON.stringify(responseData.analysis));
-        router.push("/dashboard");
+        router.push("/dashboard"); 
       } else {
         const errorText = await response.text();
         console.error(`Upload failed:`, errorText);
