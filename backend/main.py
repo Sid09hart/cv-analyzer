@@ -26,7 +26,7 @@ nlp = spacy.load("en_core_web_sm")
 # Create a specific list of allowed origins
 allowed_origins = [
     "http://localhost:3000",                  # For your local development
-    "https://cv-analyzer-three-iota.vercel.app/"    # Your actual live Vercel domain
+    "https://cv-analyzer-three-iota.vercel.app"   # Your actual live Vercel domain
 ]
 
 app.add_middleware(
