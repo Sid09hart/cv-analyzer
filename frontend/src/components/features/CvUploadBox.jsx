@@ -8,16 +8,25 @@ export default function CvUploadBox() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
+  const [profileUrl, setProfileUrl] = useState("");
 
-  const handleAnalyze = async () => {
-    if (!selectedFile) return;
+ const handleAnalyze = async () => {
+    // Require at least a file OR a URL to proceed
+    if (!selectedFile && !profileUrl.trim()) return; 
+    
     setIsUploading(true);
 
     const formData = new FormData();
-    formData.append("file", selectedFile);
+    if (selectedFile) {
+      formData.append("file", selectedFile);
+    }
+    if (profileUrl.trim()) {
+      formData.append("url", profileUrl.trim());
+    }
 
     try {
-const response = await fetch("https://cv-analyzer-0f4b.onrender.com/analyze", {        method: "POST",
+      const response = await fetch("https://cv-analyzer-0f4b.onrender.com/analyze", {
+        method: "POST",
         body: formData,
       });
 
@@ -28,10 +37,11 @@ const response = await fetch("https://cv-analyzer-0f4b.onrender.com/analyze", { 
       } else {
         const errorText = await response.text();
         console.error(`Upload failed:`, errorText);
+        alert("Server is currently busy or encountered an error. Please try again.");
         setIsUploading(false);
       }
     } catch (error) {
-      console.error("Error connecting to server:", error);
+      console.error("Network error:", error);
       setIsUploading(false);
     }
   };
@@ -59,6 +69,21 @@ const response = await fetch("https://cv-analyzer-0f4b.onrender.com/analyze", { 
           </p>
           <p className="text-slate-400 text-sm">PDF only. Max 5MB file size.</p>
         </div>
+        {/* NEW: Profile URL Input */}
+        <div className="w-full max-w-md mx-auto mb-6 relative z-30">
+          <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm focus-within:ring-2 focus-within:ring-emerald-400 transition-all">
+            <span className="pl-4 pr-3 text-slate-400">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+            </span>
+            <input 
+              type="url" 
+              placeholder="Paste LinkedIn, GitHub, or Portfolio URL..."
+              value={profileUrl}
+              onChange={(e) => setProfileUrl(e.target.value)}
+              className="w-full py-3 pr-4 text-sm text-slate-700 outline-none bg-transparent placeholder:text-slate-400"
+            />
+          </div>
+        </div>
 
    <button
           onClick={(e) => {
@@ -74,8 +99,13 @@ const response = await fetch("https://cv-analyzer-0f4b.onrender.com/analyze", { 
               : "bg-emerald-400 pointer-events-none"
           }`}
         >
-          {isUploading ? "Analyzing..." : selectedFile ? "Analyze Resume" : "Upload Your Resume"}
-        </button>
+          {isUploading 
+            ? "Analyzing Profile..." 
+            : (selectedFile || profileUrl) 
+              ? "Analyze Profile" 
+              : "Upload CV or Paste Link"}      
+              
+  </button>
 
         {/* Privacy Lock */}
         <div className="mt-6 flex items-center gap-2 text-xs text-slate-500 font-medium">
