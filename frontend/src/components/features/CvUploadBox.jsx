@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 
 
 
