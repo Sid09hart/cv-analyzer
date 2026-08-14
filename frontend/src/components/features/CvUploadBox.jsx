@@ -17,8 +17,7 @@ export default function CvUploadBox() {
     formData.append("file", selectedFile);
 
     try {
-      const response = await fetch("https://cv-analyzer-0f4b.onrender.com/", {
-        method: "POST",
+const response = await fetch("https://cv-analyzer-0f4b.onrender.com/analyze", {        method: "POST",
         body: formData,
       });
 
