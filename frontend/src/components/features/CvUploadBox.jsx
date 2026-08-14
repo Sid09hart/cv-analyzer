@@ -87,26 +87,37 @@ export default function CvUploadBox() {
 
    <button
           onClick={(e) => {
-            if (selectedFile) {
+            if (selectedFile || profileUrl.trim()) {
               e.preventDefault();
               handleAnalyze();
             }
           }}
-          disabled={isUploading}
-          className={`relative z-30 px-8 py-3 rounded-md font-bold text-white transition-all shadow-md hover:shadow-lg ${
-            selectedFile 
-              ? "bg-emerald-500 hover:bg-emerald-600 cursor-pointer" 
-              : "bg-emerald-400 pointer-events-none"
+          // Physically disables the button while uploading or if no data is provided
+          disabled={isUploading || (!selectedFile && !profileUrl.trim())}
+          className={`relative z-30 px-8 py-3 rounded-xl font-bold text-white transition-all shadow-md flex items-center justify-center gap-3 w-full max-w-md mx-auto ${
+            (selectedFile || profileUrl.trim()) && !isUploading
+              ? "bg-emerald-500 hover:bg-emerald-600 hover:shadow-lg cursor-pointer" 
+              : "bg-emerald-400 opacity-80 cursor-not-allowed"
           }`}
         >
-          {isUploading 
-            ? "Analyzing Profile..." 
-            : (selectedFile || profileUrl) 
-              ? "Analyze Profile" 
-              : "Upload CV or Paste Link"}      
-              
-  </button>
-
+          {/* Render the rotating spinner ONLY when isUploading is true */}
+          {isUploading && (
+            <svg className="w-5 h-5 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          )}
+          
+          {/* Button Text Logic */}
+          <span>
+            {isUploading 
+              ? "Analyzing Profile..." 
+              : (selectedFile || profileUrl.trim()) 
+                ? "Analyze Profile" 
+                : "Upload CV or Paste Link"}
+          </span>
+        </button>
+        
         {/* Privacy Lock */}
         <div className="mt-6 flex items-center gap-2 text-xs text-slate-500 font-medium">
           <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
